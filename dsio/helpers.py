@@ -122,7 +122,7 @@ def normalize_timefield(dataframe, timefield, speed=5):
         dataframe[timefield] = np.floor(dataframe[timefield]*1000).astype('int')
         print('Done')
 
-    now = np.int(np.round(time.time()*1000))
+    now = np.int_(np.round(time.time()*1000))
     first_timestamp = dataframe[timefield][0]
     time_offset = now - first_timestamp
     print('Adding time offset of %.2f seconds' % float(time_offset/1000.0))

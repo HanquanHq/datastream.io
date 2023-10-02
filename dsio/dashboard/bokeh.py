@@ -15,7 +15,7 @@ from bokeh.io import output_notebook, show
 
 def generate_dashboard(sensors, title, cols=3, port=5001, update_queue=None):
     """ Returns a bokeh server configured with the dsio dashboard app"""
-
+    print("start generate_dashboard...")
     def make_document(doc):
         """ Generates the dashboard document """
         # Initialize the data source
@@ -62,6 +62,8 @@ def generate_dashboard(sensors, title, cols=3, port=5001, update_queue=None):
             """ Check the queue for updates sent by the restreamer thread
                 and pass them over to the bokeh data soure """
             data = update_queue.get().to_dict('list')
+            print("new data is below:")
+            print(data)
             source.stream(data)
 
         if update_queue: # Update every second

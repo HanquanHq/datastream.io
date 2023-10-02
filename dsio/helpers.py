@@ -135,8 +135,9 @@ def normalize_timefield(dataframe, timefield, speed=5):
     print('Setting speed to %sx' % ('%f' % speed).rstrip('0').rstrip('.'))
     dataframe[timefield] = (now + (dataframe[timefield] -
                                    first_timestamp)/speed).astype(int)
-    print('Done')
-
+    print('normalize_timefield Done')
+    print('dataframe is below')
+    print(dataframe)
     return dataframe, timefield, available_sensor_names
 
 

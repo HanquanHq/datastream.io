@@ -21,7 +21,7 @@ messages = [
 for m in messages:
     try:
         print('sending {}'.format(m))
-        future=producer.send('json-topic', m)
+        future=producer.send('test', m)
         record_metadata = future.get(timeout=10)
     except KafkaError:
         # Decide what to do if produce request failed...

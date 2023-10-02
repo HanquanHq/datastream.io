@@ -6,7 +6,7 @@ The recommended installation method is to use pip within a Python 3.x virtalenv.
 
     virtualenv --python=python3 dsio-env
     source dsio-env/bin/activate
-    pip install -e git+https://github.com/MentatInnovations/datastream.io#egg=dsio
+    pip install -e git+https://github.com/HanquanHq/datastream.io.git#egg=dsio
 
 ## Usage
 

@@ -61,7 +61,7 @@ def restream_dataframe(
         es_conn = init_elasticsearch(es_uri)
         # Generate dashboard with selected fields and scores
         generate_kibana_dashboard(es_conn, sensors, index_name)
-        webbrowser.open(kibana_uri+'#/dashboard/%s-dashboard' % index_name)
+        webbrowser.open(kibana_uri + '#/dashboard/%s-dashboard' % index_name)
     else:
         es_conn = None
 
@@ -86,14 +86,14 @@ def threaded_restream_dataframe(dataframe, sensors, detector, timefield,
                                 update_queue, interval=3, sleep_interval=1):
     """ Restream dataframe to bokeh and/or Elasticsearch """
     # Split data into batches
-    batches = np.array_split(dataframe, math.ceil(dataframe.shape[0]/MAX_BATCH_SIZE))
+    batches = np.array_split(dataframe, math.ceil(dataframe.shape[0] / MAX_BATCH_SIZE))
 
     # Initialize anomaly detector models, train using first batch
     models = init_detector_models(sensors, batches[0], detector)
 
     first_pass = True
     for batch in batches:
-        for sensor in sensors: # Apply the scores
+        for sensor in sensors:  # Apply the scores
             batch['SCORE_{}'.format(sensor)] = models[sensor].score_anomaly(batch[sensor])
             batch['FLAG_{}'.format(sensor)] = models[sensor].flag_anomaly(batch[sensor])
 
@@ -102,9 +102,9 @@ def threaded_restream_dataframe(dataframe, sensors, detector, timefield,
 
         while end_time < np.max(batch[timefield]):
             start_time = end_time
-            end_time += interval*1000
+            end_time += interval * 1000
             if not recreate_index:
-                while np.round(time.time()) < end_time/1000.:
+                while np.round(time.time()) < end_time / 1000.:
                     sys.stdout.write('.')
                     sys.stdout.flush()
                     time.sleep(sleep_interval)
@@ -112,14 +112,14 @@ def threaded_restream_dataframe(dataframe, sensors, detector, timefield,
             ind = np.logical_and(batch[timefield] <= end_time,
                                  batch[timefield] > start_time)
             print('\nWriting {} rows dated {} to {}'
-                    .format(np.sum(ind),
-                            datetime.datetime.fromtimestamp(start_time/1000.),
-                            datetime.datetime.fromtimestamp(end_time/1000.)))
+                  .format(np.sum(ind),
+                          datetime.datetime.fromtimestamp(start_time / 1000.),
+                          datetime.datetime.fromtimestamp(end_time / 1000.)))
 
             if bokeh_port:
                 update_queue.put(batch.loc[ind])
 
-            if es_conn: # Stream batch to Elasticsearch
+            if es_conn:  # Stream batch to Elasticsearch
                 upload_dataframe(es_conn, batch.loc[ind], index_name, entry_type,
                                  recreate=recreate_index)
             recreate_index = False
@@ -149,25 +149,26 @@ def main():
             print('Kafka input mode...')
             kafka_window_size = int(args.kafka_window_size)
             consumer = KafkaConsumer(args.input,
-                         group_id='dsio-group',
-                         bootstrap_servers=args.kafka_uri.split(';'),
-                         #decoding json messages
-                         value_deserializer=lambda m: json.loads(m.decode('ascii')),
-                         auto_offset_reset= args.auto_offset_reset)
+                                     group_id='dsio-group',
+                                     bootstrap_servers=args.kafka_uri.split(';'),
+                                     # decoding json messages
+                                     value_deserializer=lambda m: json.loads(m.decode('ascii')),
+                                     auto_offset_reset=args.auto_offset_reset)
             try:
                 to_analyze = []
                 while True:
                     received = consumer.poll(timeout_ms=1000)
+                    print("received: " + str(received))
                     for topic_partition, messages in received.items():
                         for m in messages:
                             print(m.value)
                             to_analyze.append(m.value)
-                    #waiting to accumlate at least kafka_window_size items to analyze
+                    # waiting to accumlate at least kafka_window_size items to analyze
                     if len(to_analyze) < kafka_window_size:
                         pass
                     else:
                         print(to_analyze)
-                        dataframe=pd.DataFrame(to_analyze)
+                        dataframe = pd.DataFrame(to_analyze)
                         restream_dataframe(
                             dataframe=dataframe, detector=detector,
                             sensors=args.sensors, timefield=args.timefield,

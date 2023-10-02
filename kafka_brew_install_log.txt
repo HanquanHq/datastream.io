@@ -1,0 +1,33 @@
+brew输出
+To start kafka now and restart at login:
+  brew services start kafka # 启动
+  brew services restart kafka # 重启
+Or, if you don't want/need a background service you can just run:
+/opt/homebrew/opt/kafka/bin/kafka-server-start /opt/homebrew/etc/kafka/server.properties
+
+参考：https://www.conduktor.io/kafka/how-to-install-apache-kafka-on-mac-with-homebrew/
+
+log位置
+/opt/homebrew/Cellar/kafka/3.5.1/libexec/logs
+
+配置文件位置
+/opt/homebrew/etc/kafka
+
+启动zookeeper
+zookeeper-server-start /opt/homebrew/etc/kafka/zookeeper.properties
+
+创建topic
+kafka-topics --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic test1
+
+生产消息
+kafka-console-producer --broker-list localhost:9092 --topic test
+
+消费消息
+kafka-console-consumer --bootstrap-server localhost:9092 --topic test --from-beginning
+
+
+运行
+dsio --kafka-uri localhost:9092 --kafka-window-size 5 --sensors speed --detector gaussian1d test1 --auto_offset_reset latest
+
+重新安装
+pip install -e git+https://github.com/HanquanHq/datastream.io.git#egg=dsio

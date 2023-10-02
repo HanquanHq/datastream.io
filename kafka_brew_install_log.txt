@@ -20,7 +20,7 @@ zookeeper-server-start /opt/homebrew/etc/kafka/zookeeper.properties
 kafka-topics --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic test1
 
 生产消息
-kafka-console-producer --broker-list localhost:9092 --topic test
+kafka-console-producer --broker-list localhost:9092 --topic test1
 
 消费消息
 kafka-console-consumer --bootstrap-server localhost:9092 --topic test --from-beginning

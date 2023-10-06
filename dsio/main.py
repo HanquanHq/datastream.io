@@ -208,7 +208,7 @@ def threaded_restream_kafka(topic, bootstrap_servers, sensors, detector, timefie
                 for m in messages:
                     # print(m.value)
                     to_analyze.append(m.value)
-            if len(to_analyze) < 20:
+            if len(to_analyze) < 2:
                 pass
             else:
                 print("to_analyze is below")

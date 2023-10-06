@@ -28,6 +28,7 @@ kafka-console-consumer --bootstrap-server localhost:9092 --topic test --from-beg
 
 运行
 dsio --kafka-uri localhost:9092 --kafka-window-size 5 --sensors speed --detector gaussian1d test1 --auto_offset_reset latest
+dsio --kafka-uri localhost:9092 --kafka-window-size 5 --sensors speed --detector MyDLAnomalyDetector test1 --auto_offset_reset latest
 
 重新安装
 pip install -e git+https://github.com/HanquanHq/datastream.io.git#egg=dsio

@@ -4,7 +4,7 @@ import json
 import time
 import random
 
-producer = KafkaProducer(bootstrap_servers=['localhost:9092'],
+producer = KafkaProducer(bootstrap_servers=['192.168.31.106:9092'],
                          value_serializer=lambda m: json.dumps(m).encode('ascii'))
 
 current_time = int(time.time())

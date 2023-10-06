@@ -242,7 +242,6 @@ def main():
 
         if args.kafka_uri:
             print('Kafka input mode...')
-            kafka_window_size = int(args.kafka_window_size)
             restream_kafka(
                 topic=args.input,
                 bootstrap_servers=args.kafka_uri.split(';'),
